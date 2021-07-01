@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+#  api:
+#    container_name: 'jibbyjabber'
+#      build:
+#        context: .
+#        dockerfile: Dockerfile
+#      ports:
+#        - 8080:8080
+#      environment:
+#        DB_USER: postgres
+#        DB_PASSWORD: password
+#        DB_NAME: compose-db
+#        DB_HOST: postgres_db
+#        DB_PORT: 5432
+
+  post-db:
+    image: library/postgres:9.6
+    container_name: 'postgresPosts'
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: post
+      volumes:
+        /var/lib/postgresql/data
+
+  user-db:
+    image: library/postgres:9.6
+    container_name: 'postgresUsers'
+    ports:
+      - '5433:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: users
+      volumes:
+        /var/lib/postgresql/data
+
+  message-db:
+    image: library/postgres:9.6
+    container_name: 'postgresMessages'
+    ports:
+      - '5434:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: message
+      volumes:
+        /var/lib/postgresql/data
