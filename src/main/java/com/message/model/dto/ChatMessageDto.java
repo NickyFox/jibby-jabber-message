@@ -1,11 +1,18 @@
 package com.message.model.dto;
 
-import java.sql.Timestamp;
 
 public class ChatMessageDto {
+    long id;
     long sender;
     long receiver;
     String content;
+
+    public ChatMessageDto(long id, long sender, long receiver, String content) {
+        this.id = id;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.content = content;
+    }
 
     public ChatMessageDto(long sender, long receiver, String content) {
         this.sender = sender;
@@ -14,6 +21,14 @@ public class ChatMessageDto {
     }
 
     public ChatMessageDto() {
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getReceiver() {

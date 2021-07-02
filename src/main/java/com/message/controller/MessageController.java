@@ -1,5 +1,8 @@
 package com.message.controller;
 
+import com.message.model.ChatMapper;
+import com.message.model.dto.ChatDto;
+import com.message.model.dto.ChatList;
 import com.message.model.dto.ChatMessageDto;
 import com.message.model.table.Chat;
 import com.message.service.MessageService;
@@ -16,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @Controller
@@ -26,11 +30,17 @@ public class MessageController {
 
     @Autowired
     private MessageService messageService;
+    private final ChatMapper chatMapper;
 
-    @MessageMapping("/chat")
-    public void sendNewMessage(@DestinationVariable long chatId, @Payload final ChatMessageDto chatMessage) {
-        template.convertAndSend("/message" + chatMessage.getReceiver(), chatMessage);
-        messageService.newMessageInChat(chatMessage, chatId);
+    public MessageController(SimpMessagingTemplate template, ChatMapper chatMapper) {
+        this.template = template;
+        this.chatMapper = chatMapper;
+    }
+
+    @MessageMapping("/chat/{id}")
+    public void sendNewMessage(@DestinationVariable long id, @Payload final ChatMessageDto chatMessage) {
+        template.convertAndSend("/message" + id, chatMessage);
+        messageService.newMessageInChat(chatMessage);
     }
 
     @GetMapping("/chat/{id}")
@@ -41,7 +51,9 @@ public class MessageController {
     }
 
     @GetMapping("/chat/all/{id}")
-    public ResponseEntity<List<Chat>> getAllChats(@PathVariable long id) {
-        return ResponseEntity.ok(messageService.getAllUserChats(id));
+    public ResponseEntity<ChatList> getAllChats(@PathVariable long id) {
+        List<Chat> chats = messageService.getAllUserChats(id);
+        List<ChatDto> chatDtos = chats.stream().map(chatMapper::chatToChatDto).collect(Collectors.toList());
+        return ResponseEntity.ok(new ChatList(chatDtos));
     }
 }

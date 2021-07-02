@@ -3,7 +3,6 @@ package com.message.model.table;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.List;
 import javax.validation.constraints.NotNull;
 
 

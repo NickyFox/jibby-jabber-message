@@ -35,8 +35,8 @@ public class MessageService {
         chatRepository.save(chat);
     }
 
-    public void newMessageInChat(ChatMessageDto chatMessageDto, long chatId) {
-        Optional<Chat> optionalChat = chatRepository.findById(chatId);
+    public void newMessageInChat(ChatMessageDto chatMessageDto) {
+        Optional<Chat> optionalChat = chatRepository.findById(chatMessageDto.getId());
         if (optionalChat.isPresent()) {
             Chat chat = optionalChat.get();
             Message savedMessage = createMessage(chatMessageDto);
