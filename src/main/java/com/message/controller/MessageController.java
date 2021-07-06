@@ -50,7 +50,7 @@ public class MessageController {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found");
     }
 
-    @GetMapping("/messages/chats/{id}")
+    @GetMapping("/chats/{id}")
     public ResponseEntity<ChatList> getAllChats(@PathVariable long id) {
         List<Chat> chats = messageService.getAllUserChats(id);
         return ResponseEntity.ok(new ChatList(chats));
