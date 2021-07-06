@@ -20,7 +20,7 @@ public class Chat {
     long user2;
 
     @NotNull
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "message_id")
     private Collection<Message> messages;
 

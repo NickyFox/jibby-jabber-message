@@ -39,21 +39,20 @@ public class MessageController {
 
     @MessageMapping("/chat/{id}")
     public void sendNewMessage(@DestinationVariable long id, @Payload final ChatMessageDto chatMessage) {
-        template.convertAndSend("/message" + id, chatMessage);
+        template.convertAndSend("/topic/messages/" + id, chatMessage);
         messageService.newMessageInChat(chatMessage);
     }
 
-    @GetMapping("/chat/{id}")
+    @GetMapping("/chat/messages/{id}")
     public ResponseEntity<Chat> getChat(@PathVariable long id){
         Optional<Chat> optionalChat = messageService.getChat(id);
         if (optionalChat.isPresent()) return ResponseEntity.ok(optionalChat.get());
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat not found");
     }
 
-    @GetMapping("/chat/all/{id}")
+    @GetMapping("/messages/chats/{id}")
     public ResponseEntity<ChatList> getAllChats(@PathVariable long id) {
         List<Chat> chats = messageService.getAllUserChats(id);
-        List<ChatDto> chatDtos = chats.stream().map(chatMapper::chatToChatDto).collect(Collectors.toList());
-        return ResponseEntity.ok(new ChatList(chatDtos));
+        return ResponseEntity.ok(new ChatList(chats));
     }
 }

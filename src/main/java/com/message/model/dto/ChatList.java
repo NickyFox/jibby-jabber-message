@@ -1,22 +1,25 @@
 package com.message.model.dto;
 
+import com.message.model.table.Chat;
+
 import java.util.List;
 
 public class ChatList {
-    List<ChatDto> chatDtoList;
+    List<Chat> chatDtoList;
 
-    public ChatList(List<ChatDto> chatDtoList) {
-        this.chatDtoList = chatDtoList;
-    }
 
     public ChatList() {
     }
 
-    public List<ChatDto> getChatDtoList() {
+    public ChatList(List<Chat> chatDtoList) {
+        this.chatDtoList = chatDtoList;
+    }
+
+    public List<Chat> getChatDtoList() {
         return chatDtoList;
     }
 
-    public void setChatDtoList(List<ChatDto> chatDtoList) {
+    public void setChatDtoList(List<Chat> chatDtoList) {
         this.chatDtoList = chatDtoList;
     }
 }
