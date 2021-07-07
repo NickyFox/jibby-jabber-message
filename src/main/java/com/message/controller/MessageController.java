@@ -1,7 +1,5 @@
 package com.message.controller;
 
-import com.message.model.ChatMapper;
-import com.message.model.dto.ChatDto;
 import com.message.model.dto.ChatList;
 import com.message.model.dto.ChatMessageDto;
 import com.message.model.table.Chat;
@@ -19,7 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @Controller
@@ -30,11 +27,9 @@ public class MessageController {
 
     @Autowired
     private MessageService messageService;
-    private final ChatMapper chatMapper;
 
-    public MessageController(SimpMessagingTemplate template, ChatMapper chatMapper) {
+    public MessageController(SimpMessagingTemplate template) {
         this.template = template;
-        this.chatMapper = chatMapper;
     }
 
     @MessageMapping("/chat/{id}")
