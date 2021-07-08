@@ -19,6 +19,46 @@ public class MessageService {
     @Autowired
     ChatRepository chatRepository;
 
+    public void newMessageInChat(ChatMessageDto chatMessageDto) {
+        Optional<Chat> optionalChat = chatRepository.findById(chatMessageDto.getId());
+        if (optionalChat.isPresent()) {
+            setMessagesToExistingChat(optionalChat.get(), chatMessageDto);
+        } else {
+            Optional<Chat> chatExists = chatExists(chatMessageDto);
+            if (chatExists.isEmpty()) {
+                newMessageChat(chatMessageDto);
+            } else {
+                setMessagesToExistingChat(chatExists.get(), chatMessageDto);
+            }
+        }
+    }
+
+    public List<Chat> getAllUserChats(long userId) {
+        return chatRepository.findAllByUser1OrUser2(userId, userId);
+    }
+
+    public Optional<Chat> getChat(long chatId) {
+        return chatRepository.findById(chatId);
+    }
+
+    private void setMessagesToExistingChat(Chat chat, ChatMessageDto chatMessageDto) {
+        Message savedMessage = createMessage(chatMessageDto);
+        Collection<Message> messages = chat.getMessages();
+        messages.add(savedMessage);
+        chat.setMessages(messages);
+        chatRepository.save(chat);
+    }
+    private Message createMessage(ChatMessageDto chatMessageDto) {
+        Message message = new Message();
+        message.setReceiver(chatMessageDto.getReceiver());
+        message.setSender(chatMessageDto.getSender());
+        message.setContent(chatMessageDto.getContent());
+        Date date = new Date();
+        message.setDate(new Timestamp(date.getTime()));
+        return messageRepository.save(message);
+    }
+
+
     private void newMessageChat(ChatMessageDto chatMessageDto) {
         Chat chat = new Chat();
         Message savedMessage = createMessage(chatMessageDto);
@@ -35,36 +75,10 @@ public class MessageService {
         chatRepository.save(chat);
     }
 
-    public void newMessageInChat(ChatMessageDto chatMessageDto) {
-        Optional<Chat> optionalChat = chatRepository.findById(chatMessageDto.getId());
-        if (optionalChat.isPresent()) {
-            Chat chat = optionalChat.get();
-            Message savedMessage = createMessage(chatMessageDto);
-            Collection<Message> messages = chat.getMessages();
-            messages.add(savedMessage);
-            chat.setMessages(messages);
-            chatRepository.save(chat);
-        } else {
-            newMessageChat(chatMessageDto);
+    private Optional<Chat> chatExists(ChatMessageDto chatMessageDto) {
+        if (chatMessageDto.getReceiver() < chatMessageDto.getSender()){
+            return chatRepository.findByUser1AndUser2(chatMessageDto.getReceiver(), chatMessageDto.getSender());
         }
+        return chatRepository.findByUser1AndUser2(chatMessageDto.getSender(), chatMessageDto.getReceiver());
     }
-
-    public List<Chat> getAllUserChats(long userId) {
-        return chatRepository.findAllByUser1OrUser2(userId, userId);
-    }
-
-    public Optional<Chat> getChat(long chatId) {
-        return chatRepository.findById(chatId);
-    }
-
-    private Message createMessage(ChatMessageDto chatMessageDto) {
-        Message message = new Message();
-        message.setReceiver(chatMessageDto.getReceiver());
-        message.setSender(chatMessageDto.getSender());
-        message.setContent(chatMessageDto.getContent());
-        Date date = new Date();
-        message.setDate(new Timestamp(date.getTime()));
-        return messageRepository.save(message);
-    }
-
 }
