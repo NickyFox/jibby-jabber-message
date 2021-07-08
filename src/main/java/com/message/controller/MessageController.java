@@ -1,8 +1,8 @@
 package com.message.controller;
 
-import com.message.model.dto.ChatList;
-import com.message.model.dto.ChatMessageDto;
+import com.message.model.dto.*;
 import com.message.model.table.Chat;
+import com.message.model.table.Message;
 import com.message.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,5 +49,11 @@ public class MessageController {
     public ResponseEntity<ChatList> getAllChats(@PathVariable long id) {
         List<Chat> chats = messageService.getAllUserChats(id);
         return ResponseEntity.ok(new ChatList(chats));
+    }
+
+    @GetMapping("/chats/{id}/unread")
+    public ResponseEntity<MessageList> getAllUnreadMessagesFromChat(@PathVariable long id, UnreadMessages unreadMessages) {
+        List<Message> messages = messageService.getAllUnreadMessagesFromChat(unreadMessages);
+        return ResponseEntity.ok(new MessageList(messages));
     }
 }
